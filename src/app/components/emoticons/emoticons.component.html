@@ -1,0 +1,19 @@
+<h1 mat-dialog-title style="color: #673ab7 !important;">Insert emoticon</h1>
+<div mat-dialog-content>
+    <div class="display-flex" *ngFor="let row of emoticons">
+        <button
+            mat-icon-button
+            color="primary"
+            *ngFor="let emoticon of row"
+            [matTooltip]="emoticon.label"
+            (click)="onEmoticonBtnClick(emoticon)"
+            [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'">
+            <mat-icon color="primary" [svgIcon]="emoticon.label"></mat-icon>
+        </button>
+    </div>
+</div>
+<div mat-dialog-actions class="display-flex">
+    <div class="flex-grow-1"></div>
+    <button mat-button color="primary" (click)="onCancelBtnClick()">Cancel</button>
+</div>
+<!-- <div>Icons made by <a href="https://roundicons.com/" title="Roundicons">Roundicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div> -->

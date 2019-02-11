@@ -1,0 +1,91 @@
+:host {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+mat-card {
+    background-color: rgb(103, 58, 183, 0.4);
+    border-style: solid;
+    border-width: 2px;
+    border-color: #673ab7;
+    color: white;
+    cursor: pointer;
+
+    padding: 20px; /* ***Important... padding & border!!! */
+    width: 436px; /* + border + padding = 480 px*/
+    height: 276px; /* + border + padding = 320 px*/
+
+    display: flex;
+    flex-direction: column;
+
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -o-transition: all .5s;
+    -ms-transition: all .5s;
+    transition: all .5s;
+}
+
+mat-card.active {
+    
+}
+
+mat-card:hover {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #673ab7;
+    background-color: rgb(103, 58, 183, 0.4);
+}
+
+::ng-deep mat-progress-spinner.compatibility svg circle {
+    stroke: blue;
+}
+
+::ng-deep mat-progress-spinner.communication svg circle {
+    stroke: green;
+}
+
+::ng-deep mat-progress-spinner.sex svg circle {
+    stroke: red;
+}
+
+zodiac-sign {
+    fill: white;
+    stroke: white;
+}
+
+img {
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+}
+
+div[contenteditable] {
+    height: 32px;
+}
+
+div[contenteditable]:focus {
+    outline: 0;
+}
+
+[contentEditable=true]:empty:not(:focus):before {
+    content:attr(data-placeholder);
+    opacity: 0.4;
+}
+
+div[contenteditable] > img {
+    vertical-align: middle;
+}
+
+.width-32px {
+    width: 32px;
+}
+
+.height-32px {
+    height: 32px;
+}
+
+.line-height-32px {
+    line-height: 32px;
+}

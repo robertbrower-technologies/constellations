@@ -1,0 +1,22 @@
+<div
+  class="flex-grow-1 display-flex"
+  (panup)="onPanUp($event)"
+  (pandown)="onPanDown($event)">
+  <div class="time-machine-flex-grow-1"></div>
+  <div class="time-machine-container" [ngStyle]="{'width': width}">
+    <div class="time-machine-flex-grow-1"></div>
+    <div class="time-machine-content-container"
+      [ngStyle]="{'height': height, '-webkit-perspective': perspective, '-moz-perspective': perspective, '-o-perspective': perspective, '-ms-perspective': perspective, 'perspective': perspective}">
+      <div class="time-machine-content"
+        *ngFor="let c of content; let i = index; trackBy: trackByFn"
+        style="position: absolute; overflow: hidden; top: 0px; left: 0px; border-width: 0px; z-index: 999;"
+        [attr.class]="contentClass"
+        [ngStyle]="{ 'width': width, 'height': height, 'transform': 'translateX(' + c.translateX + 'px) translateY(' + c.translateY + 'px) translateZ(' + c.translateZ + 'px) rotateX(' + c.rotateX + 'deg)', 'opacity': c.visible ? c.opacity : 0, 'visibility': c.visible ? true : false, '-webkit-transition': transition, '-moz-transition': transition, '-o-transition': transition, '-ms-transition': transition, 'transition': transition }"
+        (click)="contentClick(i)">
+        <ng-container *ngTemplateOutlet="contentTemplate; context: {$implicit: c}"></ng-container>
+      </div>
+    </div>
+    <div class="time-machine-flex-grow-1"></div>
+  </div>
+  <div class="time-machine-flex-grow-1"></div>
+</div>

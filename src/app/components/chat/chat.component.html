@@ -1,0 +1,135 @@
+<time-machine
+    #timeMachine
+    class="flex-grow-1 z-index-1"
+    width="480px"
+    height="320px"
+    contentClass=""
+    [data]="data"
+    [trackByFn]="boundTrackByFn"
+    perspective="1000px"
+    transition="all 1s"
+    [translateX]="translateX"
+    [translateY]="translateY"
+    [translateZ]="translateZ"
+    [rotateX]="rotateX"
+    [maxTranslateZ]="maxTranslateZ"
+    (initContent)="initContent($event)"
+    (transformContent)="transformContent($event)"
+    (contentActive)="contentActive($event)"
+    (contentVisible)="contentVisible($event)"
+    (delta)="delta($event)">
+    <mat-card class="time-machine-content display-flex flex-direction-column"
+        *timeMachineContent="let content"
+        [ngClass]="{'active': content.active}"
+        [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
+        (mouseover)="
+            content.data.compatibility = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].compatibility;
+            content.data.communication = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].communication;
+            content.data.sex = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].sex;"
+        (mouseleave)="
+            content.data.compatibility = 0;
+            content.data.communication = 0;
+            content.data.sex = 0;">
+        <div class="flex-shrink-0 display-flex">
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <img [src]="content.data.photoURL" [ngStyle]="{'opacity': content.data.imgOpacity ? content.data.imgOpacity : 0}">
+                <div class="flex-grow-1"></div>
+            </div>
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <h2 class="margin-left-8px">{{content.data.zodiacSign}}</h2>
+                <div class="flex-grow-1"></div>
+            </div>
+            <div class="flex-grow-1"></div>
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <mat-progress-spinner
+                class="compatibility margin-left-8px"
+                diameter="48"
+                strokeWidth="16"
+                mode="determinate"
+                [value]="content.data.compatibility"
+                [matTooltip]="'compatibility ' + content.data.compatibility + '%'">
+                </mat-progress-spinner>
+                <div class="flex-grow-1"></div>
+            </div>
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <mat-progress-spinner
+                class="communication margin-left-8px"
+                diameter="48"
+                strokeWidth="16"
+                mode="determinate"
+                [value]="content.data.communication"
+                [matTooltip]="'communication ' + content.data.communication + '%'">
+                </mat-progress-spinner>
+                <div class="flex-grow-1"></div>
+            </div>
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <mat-progress-spinner
+                class="sex margin-left-8px"
+                diameter="48"
+                strokeWidth="16"
+                mode="determinate"
+                [value]="content.data.sex"
+                [matTooltip]="'sex ' + content.data.sex + '%'">
+                </mat-progress-spinner>
+                <div class="flex-grow-1"></div>
+            </div>
+        </div>
+        <div
+            class="margin-top-8px margin-bottom-8px flex-grow-1 min-height-0 overflow-auto background-color-white color-black"
+            (mousewheel)="$event.stopPropagation()"
+            (panup)="$event.stopPropagation()"
+            (pandown)="$event.stopPropagation()"
+            [scrollAudio]="'scrollAudio'">
+            <div class="margin-top-8px margin-bottom-8px display-flex">
+                <div class="display-flex flex-direction-column">
+                    <img class="margin-left-8px margin-right-8px" *ngIf="afAuth.user | async as user" [src]="user.photoURL">
+                    <div class="flex-grow-1"></div>
+                </div>
+                <div class="flex-grow-1">Lorem ipsum dolor sit amet, dolores facilisi at qui, mel elit facilisi temporibus ex, nam repudiare deseruisse ullamcorper id. Ne eius modus interpretaris mea, te has cetero meliore expetendis.</div>
+                <div>13:45</div>
+            </div>
+            <div class="margin-top-8px margin-bottom-8px display-flex">
+                <div class="display-flex flex-direction-column">
+                    <img class="margin-left-8px margin-right-8px" *ngIf="afAuth.user | async as user" [src]="user.photoURL">
+                    <div class="flex-grow-1"></div>
+                </div>
+                <div class="flex-grow-1">Eu his dicta doctus accommodare, mea cu cetero alienum, deleniti tractatos appellantur ea mea.</div>
+                <div>13:45</div>
+            </div>
+            <div class="margin-top-8px margin-bottom-8px display-flex">
+                <div class="display-flex flex-direction-column">
+                    <img class="margin-left-8px margin-right-8px" *ngIf="afAuth.user | async as user" [src]="user.photoURL">
+                    <div class="flex-grow-1"></div>
+                </div>
+                <div class="flex-grow-1">Usu oratio omnium oportere ei, eu sed dicant facilisis dissentiet. Ea sed commodo incorrupte, primis fierent at eum, eu vim fierent mediocrem iudicabit. Eum et inani tollit deserunt. Vis at modo labores hendrerit, diceret epicurei temporibus eu eum, posidonium ullamcorper duo ex.</div>
+                <div>13:45</div>
+            </div>
+        </div>
+        <div class="padding-top-8px padding-bottom-8px flex-shrink-0 display-flex background-color-white color-black">
+            <img class="margin-left-8px margin-right-8px" *ngIf="afAuth.user | async as user" [src]="user.photoURL">
+            <div #contenteditable
+                class="flex-grow-1 line-height-32px display-flex align-items-center overflow-auto"
+                [attr.contenteditable]="content.active"
+                data-placeholder="Click to send a message"
+                (mousewheel)="$event.stopPropagation()"
+                (panup)="$event.stopPropagation()"
+                (pandown)="$event.stopPropagation()">
+            </div>
+            <button
+                class="width-32px height-32px line-height-32px"
+                mat-icon-button
+                [mouseOverAudio]="'mouseOverAudio'"
+                [clickAudio]="'clickAudio'"
+                matTooltip="Insert emojicon"
+                (click)="insertEmoticonBtnClicked(contenteditable)"
+                [disabled]="!content.active">
+                <mat-icon color="primary" svgIcon="smiling"></mat-icon>
+            </button>
+        </div>
+    </mat-card>
+</time-machine>

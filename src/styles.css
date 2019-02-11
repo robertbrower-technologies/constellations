@@ -1,1 +1,127 @@
-/* You can add global styles to this file, and also import other style files */
+.background-color-white {
+    background-color: white !important;
+}
+
+.border-0 {
+    border: 0 !important;
+}
+
+.border-radius-10px {
+    border-radius: 10px !important;
+}
+
+.color-black {
+    color: black !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.display-inline-block {
+    display: inline-block !important;
+}
+
+.font-weight-bold {
+    font-weight: bold !important;
+}
+
+.font-size-small {
+    font-size: small !important;
+}
+
+.height-100pct {
+    height: 100% !important;
+}
+
+.margin-0 {
+    margin: 0 !important;
+}
+
+.margin-24px {
+    margin: 24px !important;
+}
+
+.margin-bottom-24px {
+    margin-bottom: 24px !important;
+}
+
+.margin-bottom-8px {
+    margin-bottom: 8px !important;
+}
+
+.margin-left-24px {
+    margin-left: 24px !important;
+}
+
+.margin-left-8px {
+    margin-left: 8px !important;
+}
+
+.margin-right-24px {
+    margin-right: 24px !important;
+}
+
+.margin-right-8px {
+    margin-right: 8px !important;
+}
+
+.margin-top-24px {
+    margin-top: 24px !important;
+}
+
+.margin-top-8px {
+    margin-top: 8px !important;
+}
+
+.opacity-0p4 {
+    opacity: 0.4 !important;
+}
+
+.opacity-1 {
+    opacity: 1 !important;
+}
+
+.overflow-auto {
+    overflow: auto !important;
+}
+
+.overflow-hidden {
+    overflow: hidden !important
+}
+
+.padding-24px {
+    padding: 24px !important;
+}
+
+.padding-bottom-8px {
+    padding-bottom: 8px;
+}
+
+.padding-left-24px {
+    padding-left: 24px !important;
+}
+
+.padding-right-24px {
+    padding-right: 24px !important;
+}
+
+.padding-top-8px {
+    padding-top: 8px;
+}
+
+.text-align-center {
+    text-align: center !important;
+}
+
+.width-100pct {
+    width: 100% !important;
+}
+
+.z-index-0 {
+    z-index: 0 !important;
+}
+
+.z-index-1 {
+    z-index: 1 !important;
+}

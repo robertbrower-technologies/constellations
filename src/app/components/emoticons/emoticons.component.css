@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+button.mat-menu-item {
+    padding: 1px 6px;
+}
+
+button.mat-menu-item .mat-icon {
+    margin-right: 0px;
+}

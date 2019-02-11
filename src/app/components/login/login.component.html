@@ -1,0 +1,34 @@
+<time-machine
+  #timeMachine
+  class="flex-grow-1 z-index-1"
+  width="480px"
+  height="320px"
+  contentClass=""
+  [data]="data"
+  [trackByFn]="boundTrackByFn"
+  perspective="1000px"
+  transition="all 1s"
+  [translateX]="translateX"
+  [translateY]="translateY"
+  [translateZ]="translateZ"
+  [rotateX]="rotateX"
+  [maxTranslateZ]="maxTranslateZ"
+  (initContent)="initContent($event)"
+  (transformContent)="transformContent($event)"
+  (contentActive)="contentActive($event)"
+  (contentVisible)="contentVisible($event)"
+  (delta)="delta($event)">
+  <mat-card class="time-machine-content display-flex flex-direction-column justify-content-center"
+    *timeMachineContent="let content"
+    [ngClass]="{'active': content.active}"
+    (click)="content.data.login()"
+    [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'">
+    <div class="display-flex">
+        <div class="flex-grow-1"></div>
+        <h2>Login using {{content.data.name}}</h2>
+        <div class="flex-grow-1"></div>
+    </div>
+    <img [src]="content.data.imgSrc">
+  </mat-card>
+</time-machine>
+
