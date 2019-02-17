@@ -27,32 +27,20 @@
       content.data.compatibility = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].compatibility;
       content.data.communication = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].communication;
       content.data.sex = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].sex;
-      content.data.imgOpacity = 1;"
+      content.data.mouseOverOpacity = 1;"
     (mouseleave)="
       content.data.compatibility = 0;
       content.data.communication = 0;
       content.data.sex = 0;
-      content.data.imgOpacity = 0"
+      content.data.mouseOverOpacity = 0"
     (click)="cardClicked()">
     <div class="flex-shrink-0 display-flex">
       <div class="display-flex flex-direction-column">
         <div class="flex-grow-1"></div>
-        <img [src]="content.data.photoURL" [ngStyle]="{'opacity': content.data.imgOpacity ? content.data.imgOpacity : 0}">
+          <h2 [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{content.data.screenName}}</h2>
         <div class="flex-grow-1"></div>
       </div>
       <div class="flex-grow-1"></div>
-      <div class="display-flex flex-direction-column">
-        <div class="flex-grow-1"></div>
-        <mat-progress-spinner
-          class="compatibility margin-left-8px"
-          diameter="48"
-          strokeWidth="16"
-          mode="determinate"
-          [value]="content.data.compatibility"
-          [matTooltip]="'compatibility ' + content.data.compatibility + '%'">
-        </mat-progress-spinner>
-        <div class="flex-grow-1"></div>
-      </div>
       <div class="display-flex flex-direction-column">
         <div class="flex-grow-1"></div>
         <mat-progress-spinner
@@ -62,6 +50,18 @@
           mode="determinate"
           [value]="content.data.communication"
           [matTooltip]="'communication ' + content.data.communication + '%'">
+        </mat-progress-spinner>
+        <div class="flex-grow-1"></div>
+      </div>
+      <div class="display-flex flex-direction-column">
+        <div class="flex-grow-1"></div>
+        <mat-progress-spinner
+          class="compatibility margin-left-8px"
+          diameter="48"
+          strokeWidth="16"
+          mode="determinate"
+          [value]="content.data.compatibility"
+          [matTooltip]="'compatibility ' + content.data.compatibility + '%'">
         </mat-progress-spinner>
         <div class="flex-grow-1"></div>
       </div>
@@ -80,9 +80,16 @@
     </div>
     <div class="display-flex">
       <div class="flex-grow-1"></div>
-      <zodiac-sign [width]="'128px'" [height]="'128px'" [zodiacSign]="content.data.zodiacSign"></zodiac-sign>
+      <zodiac-sign
+        [width]="'128px'"
+        [height]="'128px'"
+        [zodiacSign]="content.data.zodiacSign"></zodiac-sign>
+      <img
+        class="position-absolute"
+        [src]="content.data.photoURL"
+        [ngStyle]="{'left': '', 'top': '', 'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">
       <div class="flex-grow-1"></div>
     </div>
-    <p [ngStyle]="{'opacity': content.data.imgOpacity ? content.data.imgOpacity : 0}">{{zodiacCompatibility[userZodiacSign][content.data.zodiacSign].description}}</p>
+    <p [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{zodiacCompatibility[userZodiacSign][content.data.zodiacSign].description}}</p>
   </mat-card>
 </time-machine>

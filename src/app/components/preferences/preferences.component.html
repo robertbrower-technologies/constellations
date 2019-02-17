@@ -1,31 +1,35 @@
 <h1 mat-dialog-title style="color: #673ab7 !important;">Preferences</h1>
-<div mat-dialog-content class="display-flex flex-direction-column">
+<form [formGroup]="formGroup" mat-dialog-content class="display-flex flex-direction-column">
     <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Your birthday" [formControl]="data.birthday">
+        <input matInput placeholder="Your screen name" formControlName="screenName" required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Your birthday" formControlName="birthday" required>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <span>Compatibility {{data.compatibility.value}}%</span>
+    <span>Compatibility {{formGroup.controls['compatibility'].value}}%</span>
     <mat-slider
         thumbLabel="true"
         (click)="$event.stopPropagation()"
-        [formControl]="data.compatibility">
+        formControlName="compatibility">
     </mat-slider>
-    <span>Communication {{data.communication.value}}%</span>
+    <span>Communication {{formGroup.controls['communication'].value}}%</span>
     <mat-slider
         thumbLabel="true"
         (click)="$event.stopPropagation()"
-        [formControl]="data.communication">
+        formControlName="communication">
     </mat-slider>
-    <span>Sex {{data.sex.value}}%</span>
+    <span>Sex {{formGroup.controls['sex'].value}}%</span>
     <mat-slider
         thumbLabel="true"
         (click)="$event.stopPropagation()"
-        [formControl]="data.sex">
+        formControlName="sex">
     </mat-slider>
-</div>
+</form>
+<!-- <pre><pre>{{formGroup.value | json}}</pre></pre> -->
 <div mat-dialog-actions class="display-flex">
     <div class="flex-grow-1"></div>
     <button mat-button color="primary" (click)="onCancelBtnClick()">Cancel</button>
-    <button mat-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+    <button mat-button color="primary" (click)="onSaveBtnClick()" cdkFocusInitial [disabled]="formGroup.invalid">Save</button>
 </div>

@@ -22,3 +22,8 @@ $constellations-app-theme: mat-light-theme($constellations-app-primary, $constel
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($constellations-app-theme);
+
+$primary: map-get($constellations-app-theme, primary);
+$warn: map-get($constellations-app-theme, warn);
+$background: map-get($constellations-app-theme, background);
+$foreground: map-get($constellations-app-theme, foreground);

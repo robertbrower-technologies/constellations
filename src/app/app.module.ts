@@ -31,15 +31,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
-import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 import { ChatComponent } from './components/chat/chat.component';
+import { ClickLoginComponent } from './components/click-login/click-login.component';
+import { CustomSnackbarComponent } from './components/custom-snackbar/custom-snackbar.component';
+import { EmailLoginComponent } from './components/email-login/email-login.component';
 import { EmoticonsComponent } from './components/emoticons/emoticons.component';
+import { environment } from '../environments/environment';
 import { HeaderComponent } from './components/header/header.component';
 import { SearchComponent } from './components/search/search.component';
 import { LoginComponent } from './components/login/login.component';
@@ -90,6 +94,7 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     MatMenuModule,
     MatProgressSpinnerModule,
     MatSliderModule,
+    MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule,
     AppRoutingModule
@@ -97,11 +102,14 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
   declarations: [
     AppComponent,
     ChatComponent,
+    CustomSnackbarComponent,
+    EmailLoginComponent,
     EmoticonsComponent,
     HeaderComponent,
     SearchComponent,
     LoginComponent,
     PreferencesComponent,
+    ClickLoginComponent,
     StarFieldComponent,
     TimeMachineComponent,
     TimeMachineContentDirective,
@@ -124,14 +132,21 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     ScrollAudioDirective
   ],
   entryComponents: [
-    PreferencesComponent,
-    EmoticonsComponent
+    CustomSnackbarComponent,
+    EmoticonsComponent,
+    PreferencesComponent
   ],
   providers: [
     // { 
     //   provide: HAMMER_GESTURE_CONFIG, 
     //   useClass: MyHammerConfig 
-    // }
+    // },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: {
+        duration: 2000
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })

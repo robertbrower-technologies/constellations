@@ -21,14 +21,10 @@
   <mat-card class="time-machine-content display-flex flex-direction-column justify-content-center"
     *timeMachineContent="let content"
     [ngClass]="{'active': content.active}"
-    (click)="content.data.login()"
-    [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'">
-    <div class="display-flex">
-        <div class="flex-grow-1"></div>
-        <h2>Login using {{content.data.name}}</h2>
-        <div class="flex-grow-1"></div>
-    </div>
-    <img [src]="content.data.imgSrc">
+    [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
+    [ngSwitch]="content.data.name">
+    <email-login *ngSwitchCase="'Email'" [data]="content.data"></email-login>
+    <click-login *ngSwitchDefault [data]="content.data"></click-login>
   </mat-card>
 </time-machine>
 

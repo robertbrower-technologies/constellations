@@ -1,0 +1,19 @@
+<div class="display-flex">
+    <div class="flex-grow-1"></div>
+    <h2>Sign in using {{data.name}}</h2>
+    <div class="flex-grow-1"></div>
+</div>
+<img [src]="data.imgSrc">
+<form [formGroup]="formGroup" class="display-flex flex-direction-column">
+    <mat-form-field appearance="outline" color="foreground">
+        <mat-label color="foreground">Your Email</mat-label>
+        <input matInput formControlName="email" required>
+        <mat-hint color="foreground">We never save this</mat-hint>
+        <mat-error *ngIf="formGroup.get('email').invalid">{{getErrorMessage()}}</mat-error>
+    </mat-form-field>
+</form>
+<!-- <pre><pre>{{formGroup.value | json}}</pre></pre> -->
+<div class="display-flex">
+    <div class="flex-grow-1"></div>
+    <button mat-button color="foreground" (click)="data.login(formGroup.get('email').value)" cdkFocusInitial [disabled]="formGroup.invalid">Sign in</button>
+</div>

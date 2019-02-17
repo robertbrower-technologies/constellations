@@ -5,13 +5,12 @@ import { LoginComponent } from './components/login/login.component';
 import { SearchComponent } from './components/search/search.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { AuthGuard } from './services/auth-guard.service';
-import { PreferencesResolveService } from './services/preferences-resolve.service';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, resolve: { preferences: PreferencesResolveService } },
-  { path: 'search', component: SearchComponent, canActivate: [AuthGuard], resolve: { preferences: PreferencesResolveService } },
-  { path: 'chat', component: ChatComponent, canActivate: [AuthGuard], resolve: { preferences: PreferencesResolveService } }
+  { path: 'login', component: LoginComponent },
+  { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
+  { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

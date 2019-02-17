@@ -1,8 +1,8 @@
-import { Preferences } from '../components/preferences/preferences.component';
-
-export interface User {
+export class User {
     
-    birthday: string;
+    screenName: string;
+    
+    zodiacSign: string;
 
     compatibility: string;
     

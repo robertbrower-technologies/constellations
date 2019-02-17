@@ -15,7 +15,7 @@ import { TimeMachineTransformContentEvent } from '../time-machine/time-machine-t
 import { User } from '../../models/user';
 import { ZodiacCompatibility } from '../../constants/zodiac-compatibility';
 import { ZodiacDates } from '../../constants/zodiac-dates';
-import { ZodiacSignNames } from '../../constants/zodiac-sign-names';
+import { PreferencesService } from 'src/app/services/preferences.service';
 
 @Component({
   selector: 'search',
@@ -44,6 +44,8 @@ export class SearchComponent implements  OnInit, OnDestroy {
 
     zodiacDates = ZodiacDates;
 
+    preferences$: Subscription;
+    
     preferences: Preferences;
 
     userZodiacSign: string;
@@ -55,6 +57,7 @@ export class SearchComponent implements  OnInit, OnDestroy {
     constructor(
         private afs: AngularFirestore,
         private audioService: AudioService,
+        private preferencesService: PreferencesService,
         private route: ActivatedRoute,
         private router: Router
         ) {
@@ -62,21 +65,22 @@ export class SearchComponent implements  OnInit, OnDestroy {
 
     ngOnInit() {
         this.boundTrackByFn = this.trackByFn.bind(this);
-
-        this.preferences = this.route.snapshot.data.preferences;
-
-        this.userZodiacSign = getZodiacSign(this.preferences.birthday);
-
-        this.usersCollection =
-            this.afs.collection<User>('users', query =>
+        this.preferences$ = this.preferencesService.preferences.subscribe((preferences: Preferences) => {
+            this.preferences = preferences;
+            this.userZodiacSign = getZodiacSign(this.preferences.birthday);
+            this.usersCollection = this.afs.collection<User>('users', query => 
                 query.where(`${this.userZodiacSign}_compatibility`, '>=', `${this.preferences.communication}_${this.preferences.compatibility}_${this.preferences.sex}`));
-
-        this.users$ = this.usersCollection.valueChanges().subscribe(users => {
-            this.data = users.map((user) => {
-                return {
-                    zodiacSign: getZodiacSign(user.birthday),
-                    photoURL: user.photoURL
-                }
+            if (this.users$) {
+                this.users$.unsubscribe();
+            }
+            this.users$ = this.usersCollection.valueChanges().subscribe(users => {
+                this.data = users.map((user) => {
+                    return {
+                        screenName: user.screenName,
+                        zodiacSign: user.zodiacSign,
+                        photoURL: user.photoURL
+                    }
+                });
             });
         });
 
@@ -86,6 +90,10 @@ export class SearchComponent implements  OnInit, OnDestroy {
     ngOnDestroy() {
         if (this.users$) {
             this.users$.unsubscribe();
+        }
+
+        if (this.preferences$) {
+            this.preferences$.unsubscribe();
         }
     }
 

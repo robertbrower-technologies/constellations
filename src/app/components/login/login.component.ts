@@ -1,11 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument, DocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
 import { auth } from 'firebase/app';
+import { MatSnackBar } from '@angular/material';
+import { Subscription } from 'rxjs';
+
 import { convertRange } from '../../helpers/convert-range';
+import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 import { Preferences } from '../preferences/preferences.component';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
 import { TimeMachineContentActiveEvent } from '../time-machine/time-machine-content-active-event';
@@ -16,6 +19,19 @@ import { TimeMachineTransformContentEvent } from '../time-machine/time-machine-t
 import { User } from '../../models/user';
 import { ZodiacCompatibility } from '../../constants/zodiac-compatibility';
 import { getZodiacSign } from 'src/app/helpers/get-zodiac-sign';
+import { PreferencesService } from 'src/app/services/preferences.service';
+
+export interface Login {
+    
+    id: number;
+
+    name: string;
+
+    imgSrc: string;
+
+    login: Function;
+
+}
 
 @Component({
   selector: 'login',
@@ -24,11 +40,11 @@ import { getZodiacSign } from 'src/app/helpers/get-zodiac-sign';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-    data = [
+    data: Array<Login> = [
         { id: 1, name: 'Google', imgSrc: 'assets/images/logos/google.svg', login: this.loginGoogle.bind(this) },
         { id: 2, name: 'Facebook', imgSrc: 'assets/images/logos/facebook.svg', login: this.loginFacebook.bind(this) },
         { id: 3, name: 'Twitter', imgSrc: 'assets/images/logos/twitter.svg', login: this.loginTwitter.bind(this) },
-        // { id: 4, name: 'Email', imgSrc: 'assets/images/logos/email.svg', login: this.loginEmail.bind(this) }
+        { id: 4, name: 'Email', imgSrc: 'assets/images/logos/email.svg', login: this.loginEmail.bind(this) }
     ]
 
     activeIndex: number;
@@ -49,9 +65,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     returnUrl: string;
 
-    private userDoc: AngularFirestoreDocument<User>;
-    
-    user: Observable<User>;
+    user: any;
 
     preferences: Preferences;
   
@@ -59,38 +73,50 @@ export class LoginComponent implements OnInit, OnDestroy {
         private afAuth: AngularFireAuth,
         private afs: AngularFirestore,
         private audioService: AudioService,
+        private preferencesService: PreferencesService,
         private route: ActivatedRoute,
-        private router: Router) {
+        private router: Router,
+        private snackBar: MatSnackBar) {
     }
 
     ngOnInit() {
         this.boundTrackByFn = this.trackByFn.bind(this);
 
-        this.preferences = this.route.snapshot.data.preferences;
-
         this.route.queryParams
             .subscribe(params => this.returnUrl = params['returnUrl'] || '/search');
 
         this.user$ = this.afAuth.user.subscribe(user => {
-
+            this.user = user;
             if (user) {
                 this.afs.collection('users').doc(user.uid).get()
                     .subscribe((snapshot: DocumentSnapshot<User>) => {
                         if (snapshot.exists) {
+                            this.preferencesService.load(user.uid);
                             this.updateUser(user);
                         } else {
                             this.addUser(user);
                         }
                     
-                    }, (error: any) => {
-                        debugger;
+                    }, (error: Error) => {
+                        this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                            data: { message: error.message }
+                        });
                     }, () => {
                         
                     });
+
+                this.router.navigateByUrl(this.returnUrl);
             }
 
-            this.router.navigateByUrl(this.returnUrl);
-        })
+            
+        });
+
+        this.preferencesService.preferences.subscribe((preferences: Preferences) => {
+            this.preferences = preferences;
+            if (this.user) {
+                this.updateUser(this.user);
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -126,7 +152,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     contentActive(event: TimeMachineContentActiveEvent) {
         if (event.content.active) {
         // Use setTimeout() to avoid ExpressionChangedAfterItHasBeenCheckedError with slider
-        setTimeout(() => this.activeIndex = event.content.index);
+        // setTimeout(() => this.activeIndex = event.content.index);
         }
     }
 
@@ -143,70 +169,114 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     loginGoogle() {
         if (this.returnUrl) {
-            this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+            this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider())
+                .catch((reason: any) => {
+                    this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        data: { message: reason.message }
+                    });
+                });
         }
     }
     
     loginFacebook() {
         if (this.returnUrl) {
-            this.afAuth.auth.signInWithPopup(new auth.FacebookAuthProvider());
+            this.afAuth.auth.signInWithPopup(new auth.FacebookAuthProvider())
+                .catch((reason: any) => {
+                    this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        data: { message: reason.message }
+                    });
+                });
         }
     }
 
     loginTwitter() {
         if (this.returnUrl) {
-            this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider());
+            this.afAuth.auth.signInWithPopup(new auth.TwitterAuthProvider())
+                .catch((reason: any) => {
+                    this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        data: { message: reason.message }
+                    });
+                });
         }
     }
 
-    loginEmail() {
+    loginEmail(email: string) {
         if (this.returnUrl) {
-            this.afAuth.auth.signInWithPopup(new auth.EmailAuthProvider());
+            let actionCodeSettings = {
+                // URL you want to redirect back to. The domain (www.example.com) for this
+                // URL must be whitelisted in the Firebase Console.
+                url: 'localhost',
+                // This must be true.
+                handleCodeInApp: true,
+                // iOS: {
+                //   bundleId: 'com.example.ios'
+                // },
+                // android: {
+                //   packageName: 'com.example.android',
+                //   installApp: true,
+                //   minimumVersion: '12'
+                // },
+                dynamicLinkDomain: 'localhost'
+              };
+              
+            this.afAuth.auth.sendSignInLinkToEmail(email, actionCodeSettings).then(() =>
+                {
+                    localStorage.setItem('email', email);
+                })
+                .catch((reason: any) => {
+                    this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                        data: { message: reason.message }
+                    });
+                });
         }
     }
 
     addUser(user) {
         let now = (new Date()).toISOString();
+        let zodiacSign = getZodiacSign(this.preferences.birthday);
         this.afs.collection('users').doc(user.uid).set({
-            birthday: this.preferences.birthday,
+            uid: user.uid,
+            photoURL: user.photoURL,
             lastSignInTime: now,
             lastActiveTime: now,
-            photoURL: user.photoURL,
-            uid: user.uid,
-            aquarius_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].sex}`,
-            pisces_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].sex}`,
-            aries_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].sex}`,
-            taurus_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].sex}`,
-            gemini_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].sex}`,
-            cancer_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].sex}`,
-            leo_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].sex}`,
-            virgo_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].sex}`,
-            libra_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].sex}`,
-            scorpio_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].sex}`,
-            sagittarius_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].sex}`,
-            capricorn_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].sex}`
+            screenName: this.preferences.screenName,
+            zodiacSign: zodiacSign,
+            aquarius_compatibility: `${ZodiacCompatibility[zodiacSign]['aquarius'].communication}_${ZodiacCompatibility[zodiacSign]['aquarius'].compatibility}_${ZodiacCompatibility[zodiacSign]['aquarius'].sex}`,
+            pisces_compatibility: `${ZodiacCompatibility[zodiacSign]['pisces'].communication}_${ZodiacCompatibility[zodiacSign]['pisces'].compatibility}_${ZodiacCompatibility[zodiacSign]['pisces'].sex}`,
+            aries_compatibility: `${ZodiacCompatibility[zodiacSign]['aries'].communication}_${ZodiacCompatibility[zodiacSign]['aries'].compatibility}_${ZodiacCompatibility[zodiacSign]['aries'].sex}`,
+            taurus_compatibility: `${ZodiacCompatibility[zodiacSign]['taurus'].communication}_${ZodiacCompatibility[zodiacSign]['taurus'].compatibility}_${ZodiacCompatibility[zodiacSign]['taurus'].sex}`,
+            gemini_compatibility: `${ZodiacCompatibility[zodiacSign]['gemini'].communication}_${ZodiacCompatibility[zodiacSign]['gemini'].compatibility}_${ZodiacCompatibility[zodiacSign]['gemini'].sex}`,
+            cancer_compatibility: `${ZodiacCompatibility[zodiacSign]['cancer'].communication}_${ZodiacCompatibility[zodiacSign]['cancer'].compatibility}_${ZodiacCompatibility[zodiacSign]['cancer'].sex}`,
+            leo_compatibility: `${ZodiacCompatibility[zodiacSign]['leo'].communication}_${ZodiacCompatibility[zodiacSign]['leo'].compatibility}_${ZodiacCompatibility[zodiacSign]['leo'].sex}`,
+            virgo_compatibility: `${ZodiacCompatibility[zodiacSign]['virgo'].communication}_${ZodiacCompatibility[zodiacSign]['virgo'].compatibility}_${ZodiacCompatibility[zodiacSign]['virgo'].sex}`,
+            libra_compatibility: `${ZodiacCompatibility[zodiacSign]['libra'].communication}_${ZodiacCompatibility[zodiacSign]['libra'].compatibility}_${ZodiacCompatibility[zodiacSign]['libra'].sex}`,
+            scorpio_compatibility: `${ZodiacCompatibility[zodiacSign]['scorpio'].communication}_${ZodiacCompatibility[zodiacSign]['scorpio'].compatibility}_${ZodiacCompatibility[zodiacSign]['scorpio'].sex}`,
+            sagittarius_compatibility: `${ZodiacCompatibility[zodiacSign]['sagittarius'].communication}_${ZodiacCompatibility[zodiacSign]['sagittarius'].compatibility}_${ZodiacCompatibility[zodiacSign]['sagittarius'].sex}`,
+            capricorn_compatibility: `${ZodiacCompatibility[zodiacSign]['capricorn'].communication}_${ZodiacCompatibility[zodiacSign]['capricorn'].compatibility}_${ZodiacCompatibility[zodiacSign]['capricorn'].sex}`
         });
     }
 
     updateUser(user) {
         let now = (new Date()).toISOString();
+        let zodiacSign = getZodiacSign(this.preferences.birthday);
         this.afs.collection('users').doc(user.uid).update({
-            birthday: this.preferences.birthday,
+            photoURL: user.photoURL,
             lastSignInTime: now,
             lastActiveTime: now,
-            photoURL: user.photoURL,
-            aquarius_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aquarius'].sex}`,
-            pisces_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['pisces'].sex}`,
-            aries_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['aries'].sex}`,
-            taurus_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['taurus'].sex}`,
-            gemini_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['gemini'].sex}`,
-            cancer_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['cancer'].sex}`,
-            leo_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['leo'].sex}`,
-            virgo_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['virgo'].sex}`,
-            libra_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['libra'].sex}`,
-            scorpio_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['scorpio'].sex}`,
-            sagittarius_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['sagittarius'].sex}`,
-            capricorn_compatibility: `${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].communication}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].compatibility}_${ZodiacCompatibility[getZodiacSign(this.preferences.birthday)]['capricorn'].sex}`
+            screenName: this.preferences.screenName,
+            zodiacSign: zodiacSign,
+            aquarius_compatibility: `${ZodiacCompatibility[zodiacSign]['aquarius'].communication}_${ZodiacCompatibility[zodiacSign]['aquarius'].compatibility}_${ZodiacCompatibility[zodiacSign]['aquarius'].sex}`,
+            pisces_compatibility: `${ZodiacCompatibility[zodiacSign]['pisces'].communication}_${ZodiacCompatibility[zodiacSign]['pisces'].compatibility}_${ZodiacCompatibility[zodiacSign]['pisces'].sex}`,
+            aries_compatibility: `${ZodiacCompatibility[zodiacSign]['aries'].communication}_${ZodiacCompatibility[zodiacSign]['aries'].compatibility}_${ZodiacCompatibility[zodiacSign]['aries'].sex}`,
+            taurus_compatibility: `${ZodiacCompatibility[zodiacSign]['taurus'].communication}_${ZodiacCompatibility[zodiacSign]['taurus'].compatibility}_${ZodiacCompatibility[zodiacSign]['taurus'].sex}`,
+            gemini_compatibility: `${ZodiacCompatibility[zodiacSign]['gemini'].communication}_${ZodiacCompatibility[zodiacSign]['gemini'].compatibility}_${ZodiacCompatibility[zodiacSign]['gemini'].sex}`,
+            cancer_compatibility: `${ZodiacCompatibility[zodiacSign]['cancer'].communication}_${ZodiacCompatibility[zodiacSign]['cancer'].compatibility}_${ZodiacCompatibility[zodiacSign]['cancer'].sex}`,
+            leo_compatibility: `${ZodiacCompatibility[zodiacSign]['leo'].communication}_${ZodiacCompatibility[zodiacSign]['leo'].compatibility}_${ZodiacCompatibility[zodiacSign]['leo'].sex}`,
+            virgo_compatibility: `${ZodiacCompatibility[zodiacSign]['virgo'].communication}_${ZodiacCompatibility[zodiacSign]['virgo'].compatibility}_${ZodiacCompatibility[zodiacSign]['virgo'].sex}`,
+            libra_compatibility: `${ZodiacCompatibility[zodiacSign]['libra'].communication}_${ZodiacCompatibility[zodiacSign]['libra'].compatibility}_${ZodiacCompatibility[zodiacSign]['libra'].sex}`,
+            scorpio_compatibility: `${ZodiacCompatibility[zodiacSign]['scorpio'].communication}_${ZodiacCompatibility[zodiacSign]['scorpio'].compatibility}_${ZodiacCompatibility[zodiacSign]['scorpio'].sex}`,
+            sagittarius_compatibility: `${ZodiacCompatibility[zodiacSign]['sagittarius'].communication}_${ZodiacCompatibility[zodiacSign]['sagittarius'].compatibility}_${ZodiacCompatibility[zodiacSign]['sagittarius'].sex}`,
+            capricorn_compatibility: `${ZodiacCompatibility[zodiacSign]['capricorn'].communication}_${ZodiacCompatibility[zodiacSign]['capricorn'].compatibility}_${ZodiacCompatibility[zodiacSign]['capricorn'].sex}`
         });
     }
 
