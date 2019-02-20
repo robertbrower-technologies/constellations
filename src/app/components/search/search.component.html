@@ -37,7 +37,18 @@
     <div class="flex-shrink-0 display-flex">
       <div class="display-flex flex-direction-column">
         <div class="flex-grow-1"></div>
-          <h2 [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{content.data.screenName}}</h2>
+          <div class="display-flex">
+            <h2 [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{content.data.screenName}}</h2>
+            <div class="margin-left-8px display-flex flex-direction-column">
+              <div class="flex-grow-1"></div>
+              <svg height="16" width="16"
+                [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}"
+                matTooltip="Last active {{content.data.lastActiveTime | date}}">
+                <circle cx="8" cy="8" r="8" stroke="green" stroke-width="0" fill="green" />
+              </svg>
+              <div class="flex-grow-1"></div>
+            </div>
+          </div>
         <div class="flex-grow-1"></div>
       </div>
       <div class="flex-grow-1"></div>
@@ -81,10 +92,11 @@
     <div class="display-flex">
       <div class="flex-grow-1"></div>
       <zodiac-sign
+        [ngStyle]="{'opacity': content.data.opacity}"
         [width]="'128px'"
         [height]="'128px'"
         [zodiacSign]="content.data.zodiacSign"></zodiac-sign>
-      <img
+      <img *ngIf="content.data.showPhotoInSearchResults"
         class="position-absolute"
         [src]="content.data.photoURL"
         [ngStyle]="{'left': '', 'top': '', 'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">

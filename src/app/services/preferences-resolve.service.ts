@@ -10,7 +10,7 @@ const DELAY = 0;
 @Injectable({
     providedIn: 'root'
 })
-export class PreferencesResolveService implements Resolve<Observable<Preferences>> {
+export class PreferencesResolveService implements Resolve<Observable<Partial<Preferences>>> {
 
   constructor(private preferencesService: PreferencesService) {}
 

@@ -8,10 +8,22 @@ import { getZodiacSign } from '../helpers/get-zodiac-sign';
 })
 export class PreferencesService {
 
-    preferences: BehaviorSubject<Preferences>;
+    preferences: BehaviorSubject<Partial<Preferences>>;
     
     constructor() {
-        this.init();
+        let birthday = (new Date()).toISOString();
+        this.preferences = new BehaviorSubject<Partial<Preferences>>(
+            // {
+            //     birthday: birthday,
+            //     communication: 0,
+            //     compatibility: 0,
+            //     screenName: getZodiacSign(birthday),
+            //     showPhotoInSearchResults: false,
+            //     sex: 0
+            // }
+            null
+        );
+        
     }
 
     public getScreenName(uid: string): string {
@@ -39,6 +51,12 @@ export class PreferencesService {
         return compatibility;
     }
 
+    public getShowPhotoInSearchResults(uid: string): boolean {
+        let _showPhotoInSearchResults = localStorage.getItem(`${uid} showPhotoInSearchResults`);
+        let showPhotoInSearchResults = _showPhotoInSearchResults ? _showPhotoInSearchResults === 'true' : false;
+        return showPhotoInSearchResults;
+    }
+
     public getSex(uid: string): number {
         let _sex = localStorage.getItem(`${uid} sex`);
         let sex = _sex ? parseInt(_sex) : 0;
@@ -46,12 +64,13 @@ export class PreferencesService {
     }
 
     init(): void {
-        let birthday = (new Date()).toISOString()
-        this.preferences = new BehaviorSubject<Preferences>({
-            screenName: getZodiacSign(birthday),
+        let birthday = (new Date()).toISOString();
+        this.preferences.next({
             birthday: birthday,
             communication: 0,
             compatibility: 0,
+            screenName: getZodiacSign(birthday),
+            showPhotoInSearchResults: false,
             sex: 0
         });
     }
@@ -62,6 +81,7 @@ export class PreferencesService {
             communication: this.getComunication(uid),
             compatibility: this.getCompatibility(uid),
             screenName: this.getScreenName(uid),
+            showPhotoInSearchResults: this.getShowPhotoInSearchResults(uid),
             sex: this.getSex(uid)
         });
     }

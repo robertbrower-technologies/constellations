@@ -1,11 +1,15 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { convertRange } from '../../helpers/convert-range';
+import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 import { getZodiacSign } from '../../helpers/get-zodiac-sign';
+import { Observable, Subscription } from 'rxjs';
+import { pad2 } from '../../helpers/pad2';
 import { Preferences } from '../preferences/preferences.component';
-import { Subscription } from 'rxjs';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
 import { TimeMachineContentActiveEvent } from '../time-machine/time-machine-content-active-event';
 import { TimeMachineContentVisibleEvent } from '../time-machine/time-machine-content-visible-event';
@@ -24,7 +28,7 @@ import { PreferencesService } from 'src/app/services/preferences.service';
 })
 export class SearchComponent implements  OnInit, OnDestroy {
 
-    data: Array<any>;
+    data: Array<Partial<User>>;
 
     activeIndex: number;
 
@@ -48,6 +52,10 @@ export class SearchComponent implements  OnInit, OnDestroy {
     
     preferences: Preferences;
 
+    user$: Subscription;
+
+    user: any;
+
     userZodiacSign: string;
 
     private usersCollection: AngularFirestoreCollection<User>;
@@ -55,11 +63,12 @@ export class SearchComponent implements  OnInit, OnDestroy {
     users$: Subscription;
 
     constructor(
+        public afAuth: AngularFireAuth,
         private afs: AngularFirestore,
         private audioService: AudioService,
         private preferencesService: PreferencesService,
-        private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private snackBar: MatSnackBar
         ) {
     }
 
@@ -67,20 +76,17 @@ export class SearchComponent implements  OnInit, OnDestroy {
         this.boundTrackByFn = this.trackByFn.bind(this);
         this.preferences$ = this.preferencesService.preferences.subscribe((preferences: Preferences) => {
             this.preferences = preferences;
+            this.updateUser(this.afAuth.auth.currentUser);
             this.userZodiacSign = getZodiacSign(this.preferences.birthday);
             this.usersCollection = this.afs.collection<User>('users', query => 
-                query.where(`${this.userZodiacSign}_compatibility`, '>=', `${this.preferences.communication}_${this.preferences.compatibility}_${this.preferences.sex}`));
+                query.where(
+                    `${this.userZodiacSign}_compatibility`,'>=',
+                    parseInt(`${pad2(this.preferences.communication)}${pad2(this.preferences.compatibility)}${pad2(this.preferences.sex)}`)));
             if (this.users$) {
                 this.users$.unsubscribe();
             }
             this.users$ = this.usersCollection.valueChanges().subscribe(users => {
-                this.data = users.map((user) => {
-                    return {
-                        screenName: user.screenName,
-                        zodiacSign: user.zodiacSign,
-                        photoURL: user.photoURL
-                    }
-                });
+                this.data = users;
             });
         });
 
@@ -143,4 +149,29 @@ export class SearchComponent implements  OnInit, OnDestroy {
         this.router.navigate(['/chat']);
     }
 
+    updateUser(user) {
+        let now = (new Date()).toISOString();
+        let userZodiacSign = getZodiacSign(this.preferences.birthday);
+        this.afs.collection('users').doc(user.uid).update({
+            photoURL: user.photoURL,
+            lastSignInTime: now,
+            lastActiveTime: now,
+            screenName: this.preferences.screenName,
+            showPhotoInSearchResults: this.preferences.showPhotoInSearchResults,
+            zodiacSign: userZodiacSign,
+            aquarius_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['aquarius'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['aquarius'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['aquarius'].sex)}`),
+            pisces_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['pisces'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['pisces'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['pisces'].sex)}`),
+            aries_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['aries'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['aries'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['aries'].sex)}`),
+            taurus_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['taurus'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['taurus'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['taurus'].sex)}`),
+            gemini_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['gemini'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['gemini'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['gemini'].sex)}`),
+            cancer_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['cancer'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['cancer'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['cancer'].sex)}`),
+            leo_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['leo'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['leo'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['leo'].sex)}`),
+            virgo_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['virgo'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['virgo'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['virgo'].sex)}`),
+            libra_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['libra'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['libra'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['libra'].sex)}`),
+            scorpio_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].sex)}`),
+            sagittarius_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].sex)}`),
+            capricorn_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].sex)}`)
+        });
+    }
+    
 }

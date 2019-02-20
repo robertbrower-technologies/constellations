@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { getZodiacSign } from '../../helpers/get-zodiac-sign';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Preferences } from '../preferences/preferences.component';
 import { PreferencesService } from '../../services/preferences.service';
@@ -7,13 +8,15 @@ import { AngularFireAuth } from '@angular/fire/auth';
 
 export interface Preferences {
 
-  screenName: string;
-  
   birthday: string;
-  
+
   communication: number;
 
   compatibility: number;
+
+  screenName: string;
+
+  showPhotoInSearchResults: boolean;
 
   sex: number;
 
@@ -27,12 +30,14 @@ export interface Preferences {
 export class PreferencesComponent implements OnInit {
 
   formGroup: FormGroup;
+
+  getZodiacSign = getZodiacSign;
   
   constructor(
-    private afAuth: AngularFireAuth,
+    public afAuth: AngularFireAuth,
     @Inject(MAT_DIALOG_DATA) public data: Preferences,
     public dialogRef: MatDialogRef<PreferencesComponent>,
-    private preferencesService: PreferencesService) {
+    public preferencesService: PreferencesService) {
   }
 
   ngOnInit() {
@@ -45,6 +50,7 @@ export class PreferencesComponent implements OnInit {
       communication: new FormControl(this.data.communication),
       compatibility: new FormControl(this.data.compatibility),
       screenName: new FormControl(this.data.screenName),
+      showPhotoInSearchResults: new FormControl(this.data.showPhotoInSearchResults),
       sex: new FormControl(this.data.sex)
     };
 
@@ -57,6 +63,7 @@ export class PreferencesComponent implements OnInit {
       communication: this.formGroup.get('communication').value,
       compatibility: this.formGroup.get('compatibility').value,
       screenName: this.formGroup.get('screenName').value,
+      showPhotoInSearchResults: this.formGroup.get('showPhotoInSearchResults').value,
       sex: this.formGroup.get('sex').value
     });
   }

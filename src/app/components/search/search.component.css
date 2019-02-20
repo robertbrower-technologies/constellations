@@ -59,11 +59,9 @@ img {
     height: 128px;
     width: 128px;
     border-radius: 50%;
-
-    
 }
 
-h2, img, p {
+h2, svg, img, :host ::ng-deep zodiac-sign svg, p {
     -webkit-transition: all .5s;
     -moz-transition: all .5s;
     -o-transition: all .5s;

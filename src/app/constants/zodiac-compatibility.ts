@@ -1,32 +1,32 @@
 // https://www.compatible-astrology.com/
 export const ZodiacCompatibility = {
     aquarius: {
-        aquarius:   { communication: 30, compatibility: 50, sex: 60, description: 'TODO' },
-        pisces:     { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
+        aquarius:   { communication: 90, compatibility: 90, sex: 75, description: 'Aquarius and Aquarius is a match almost guaranteed to be best friends, but it doesn\'t always work as well as lovers.' },
+        pisces:     { communication: 60, compatibility: 50, sex: 60, description: 'Aquarius and Pisces is a match which is often misjudged by the astrological press.' },
         aries:      { communication: 90, compatibility: 90, sex: 75, description: 'Exciting and fun, the match of Aries and Aquarius has solid potential, though it may be challenging in some specific areas...' },
         taurus:     { communication: 30, compatibility: 50, sex: 60, description: 'Taurus and Aquarius is often a challenging relationship to make work.' },
         gemini:     { communication: 90, compatibility: 90, sex: 90, description: 'Gemini and Aquarius is often a perfect match, and one which often has soulmate potential!' },
         cancer:     { communication: 30, compatibility: 50, sex: 60, description: 'Cancer and Aquarius can be a challenging relationship to make work.' },
         leo:        { communication: 60, compatibility: 70, sex: 90, description: 'Leo and Aquarius is often a challenging and exciting match.' },
         virgo:      { communication: 60, compatibility: 70, sex: 75, description: 'Virgo and Aquarius is often an easy friendship, but can be a harder match to make work as lovers.' },
-        libra:      { communication: 30, compatibility: 50, sex: 60, description: 'TODO' },
-        scorpio:    { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        sagittarius:{ communication: 30, compatibility: 50, sex: 75, description: 'TODO' },
-        capricorn:  { communication: 60, compatibility: 70, sex: 90, description: 'TODO' }
+        libra:      { communication: 90, compatibility: 90, sex: 90, description: 'Libra and Aquarius is one of the very best matches, often with a good chance of being in the soulmate category!' },
+        scorpio:    { communication: 30, compatibility: 70, sex: 75, description: 'Scorpio and Aquarius is often a hard match to make work.' },
+        sagittarius:{ communication: 90, compatibility: 90, sex: 90, description: 'Sagittarius and Aquarius is a great match!' },
+        capricorn:  { communication: 30, compatibility: 50, sex: 75, description: 'Capricorn and Aquarius is a relationship which is often very good as friends or as a casual fling.' }
     },
     pisces: {
-        aquarius:   { communication: 30, compatibility: 50, sex: 60, description: 'TODO' },
-        pisces:     { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        aries:      { communication: 30, compatibility: 50, sex: 75, description: 'TODO' },
-        taurus:     { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        gemini:     { communication: 60, compatibility: 50, sex: 60, description: 'TODO' },
-        cancer:     { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        leo:        { communication: 60, compatibility: 70, sex: 75, description: 'TODO' },
-        virgo:      { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        libra:      { communication: 30, compatibility: 50, sex: 60, description: 'TODO' },
-        scorpio:    { communication: 90, compatibility: 90, sex: 90, description: 'TODO' },
-        sagittarius:{ communication: 30, compatibility: 50, sex: 75, description: 'TODO' },
-        capricorn:  { communication: 60, compatibility: 70, sex: 90, description: 'TODO' }
+        aquarius:   { communication: 60, compatibility: 50, sex: 60, description: 'Aquarius and Pisces is a match which is often misjudged by the astrological press.' },
+        pisces:     { communication: 60, compatibility: 70, sex: 90, description: 'Pisces and Pisces (two partners, each with a Pisces sun sign) is a match which is very dependant on moon signs.' },
+        aries:      { communication: 30, compatibility: 50, sex: 75, description: 'Aries and Pisces can be a great match if Aries is patient, caring and romantic.' },
+        taurus:     { communication: 60, compatibility: 90, sex: 90, description: 'Taurus and Pisces is a great match, as long as you can appreciate each others strengths and not try to change each other.' },
+        gemini:     { communication: 60, compatibility: 50, sex: 60, description: 'Gemini and Pisces is often a bittersweet match, with equal parts harmony and frustration.' },
+        cancer:     { communication: 90, compatibility: 90, sex: 90, description: 'Cancer and Pisces is a great match, very often with soulmate potential!' },
+        leo:        { communication: 60, compatibility: 70, sex: 75, description: 'Leo and Pisces can sometimes be a difficult match to make work, though it has a lot of potential.' },
+        virgo:      { communication: 60, compatibility: 70, sex: 90, description: 'Virgo and Pisces is often a bittersweet match, with equal parts harmony and frustration.' },
+        libra:      { communication: 60, compatibility: 70, sex: 75, description: 'Libra and Pisces can be a challenging partnership to make work, and become particularly frustrating as you\'re both very considerate communicators, yet rarely see eye to eye.' },
+        scorpio:    { communication: 90, compatibility: 90, sex: 90, description: 'Scorpio and Pisces is one of your very best matches.' },
+        sagittarius:{ communication: 30, compatibility: 50, sex: 75, description: 'Sagittarius and Pisces is one of the harder zodiac pairings to make work.' },
+        capricorn:  { communication: 90, compatibility: 90, sex: 90, description: 'Capricorn and Pisces is a great match, with an harmonious (particularly important to both of you) match of Capricorn\'s practical approach to life and Pisces imagination and romantic nature.' }
     },
     aries: {
         aquarius:   { communication: 30, compatibility: 50, sex: 60, description: 'TODO' },

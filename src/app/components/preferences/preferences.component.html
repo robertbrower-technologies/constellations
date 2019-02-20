@@ -8,17 +8,23 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <span>Compatibility {{formGroup.controls['compatibility'].value}}%</span>
-    <mat-slider
-        thumbLabel="true"
-        (click)="$event.stopPropagation()"
-        formControlName="compatibility">
-    </mat-slider>
+    <span class="padding-bottom-1p25em">Show your photo in other people's search results</span>
+    <mat-checkbox formControlName="showPhotoInSearchResults">
+        <img *ngIf="afAuth.user | async as user" [src]="user.photoURL"
+            class="margin-left-8px"
+            height="56px" width="56px">
+    </mat-checkbox>
     <span>Communication {{formGroup.controls['communication'].value}}%</span>
     <mat-slider
         thumbLabel="true"
         (click)="$event.stopPropagation()"
         formControlName="communication">
+    </mat-slider>
+    <span>Compatibility {{formGroup.controls['compatibility'].value}}%</span>
+    <mat-slider
+        thumbLabel="true"
+        (click)="$event.stopPropagation()"
+        formControlName="compatibility">
     </mat-slider>
     <span>Sex {{formGroup.controls['sex'].value}}%</span>
     <mat-slider

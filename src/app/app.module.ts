@@ -1,5 +1,6 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+// import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
@@ -21,6 +22,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material';
@@ -30,6 +32,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -75,6 +78,7 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    // CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -84,6 +88,7 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     AngularFireStorageModule, // imports firebase/storage only needed for storage features
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatDatepickerModule,
     MatDialogModule,
     MatNativeDateModule,
@@ -93,6 +98,7 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
     MatSliderModule,
     MatSnackBarModule,
     MatToolbarModule,

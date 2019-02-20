@@ -47,7 +47,7 @@ export class ChatComponent implements  OnInit, OnDestroy {
 
     zodiacDates = ZodiacDates;
 
-    preferences: Preferences;
+    preferences: Partial<Preferences>;
 
     preferences$: Subscription;
 

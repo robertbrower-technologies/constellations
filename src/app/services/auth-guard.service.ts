@@ -9,12 +9,12 @@ import { Router } from '@angular/router';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private auth: AngularFireAuth, private router: Router) {}
+  constructor(private afAuth: AngularFireAuth, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      if (this.auth.auth.currentUser) {
+      if (this.afAuth.auth.currentUser) {
         return true
       } else {
         this.router.navigate(['/login'], {
