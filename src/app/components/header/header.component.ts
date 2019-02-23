@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { getZodiacSign } from '../../helpers/get-zodiac-sign';
 import { PreferencesComponent } from '../preferences/preferences.component';
 import { PreferencesService } from '../../services/preferences.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'header',
@@ -17,11 +19,19 @@ export class HeaderComponent {
 
   getZodiacSign = getZodiacSign
 
+  smallDeviceObs: Observable<BreakpointState>;
+
   constructor(
     public afAuth: AngularFireAuth,
+    public breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private router: Router,
-    public preferencesService: PreferencesService) {}
+    public preferencesService: PreferencesService) {
+      this.smallDeviceObs = breakpointObserver.observe([
+        Breakpoints.HandsetLandscape,
+        Breakpoints.HandsetPortrait
+      ]);
+    }
 
   ngOnInit() {
     

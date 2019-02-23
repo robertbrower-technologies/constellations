@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentSnapshot } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
 import { convertRange } from '../../helpers/convert-range';
+import { ChatInvitation } from '../../models/chat-invitation';
 import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 import { getZodiacSign } from '../../helpers/get-zodiac-sign';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { pad2 } from '../../helpers/pad2';
 import { Preferences } from '../preferences/preferences.component';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
@@ -62,6 +63,8 @@ export class SearchComponent implements  OnInit, OnDestroy {
 
     users$: Subscription;
 
+    chatInvitationDoc$: Subscription;
+
     constructor(
         public afAuth: AngularFireAuth,
         private afs: AngularFirestore,
@@ -90,6 +93,23 @@ export class SearchComponent implements  OnInit, OnDestroy {
             });
         });
 
+        // this.chatInvitationDoc$ = this.afs.collection('chat_invitations').doc(this.afAuth.auth.currentUser.uid).valueChanges()
+        //     .subscribe((chatInvitation: ChatInvitation) => {
+        //         this.snackBar.openFromComponent(CustomSnackbarComponent, {
+        //             data: { message: chatInvitation.from }
+        //         });
+        //     }, (error: Error) => {
+        //         this.snackBar.openFromComponent(CustomSnackbarComponent, {
+        //             data: { message: error.message }
+        //         });
+        //     }, () => {
+                
+        //     });
+
+        this.afs.collection('users').doc(this.afAuth.auth.currentUser.uid).collection('chatInvitations').valueChanges()
+            .subscribe(chatInvitations => {
+            })
+
         this.audioService.playAudio('onInitAudio');
     }
 
@@ -100,6 +120,10 @@ export class SearchComponent implements  OnInit, OnDestroy {
 
         if (this.preferences$) {
             this.preferences$.unsubscribe();
+        }
+
+        if (this.chatInvitationDoc$) {
+            this.chatInvitationDoc$.unsubscribe();
         }
     }
 
@@ -145,8 +169,11 @@ export class SearchComponent implements  OnInit, OnDestroy {
         this.audioService.playAudio('scrollAudio');
     }
 
-    cardClicked(): void {
-        this.router.navigate(['/chat']);
+    cardClicked(content: TimeMachineContent): void {
+        // this.router.navigate(['/chat']);
+        if (content.active) {
+            this.sendChatInvitation(content.data.uid);
+        }
     }
 
     updateUser(user) {
@@ -171,6 +198,23 @@ export class SearchComponent implements  OnInit, OnDestroy {
             scorpio_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['scorpio'].sex)}`),
             sagittarius_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['sagittarius'].sex)}`),
             capricorn_compatibility: parseInt(`${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].communication)}${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].compatibility)}${pad2(ZodiacCompatibility[userZodiacSign]['capricorn'].sex)}`)
+        });
+    }
+
+    sendChatInvitation(uid: string) {
+        let now = (new Date()).toISOString();
+        this.afs.collection('users').doc(uid).collection('chatInvitations').doc(this.afAuth.auth.currentUser.uid).set({
+            from: this.afAuth.auth.currentUser.uid,
+            sentTime: now
+        }).then(() => {
+            this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                data: { message: 'Chat invitation sent.' }
+            });
+        })
+        .catch((error) => {
+            this.snackBar.openFromComponent(CustomSnackbarComponent, {
+                data: { message: error.message }
+            });
         });
     }
     

@@ -115,22 +115,12 @@ export class TimeMachineComponent {
     this.onMouseWheel(event);
   }
 
-  // @HostListener('swipeup', ['$event']) onSwipeUp(event: any) {
-  //   debugger;
-  //   this.onSwipe(event);
-  // }
-
-  // @HostListener('swipedown', ['$event']) onSwipeDown(event: any) {
-  //   debugger;
-  //   this.onSwipe(event);
-  // }
-
-  onPanUp(event: any) {
-    this.onSwipe(event.type);
+  @HostListener('swipeup', ['$event']) onSwipeUp(event: any) {
+    this.onSwipe(event);
   }
 
-  onPanDown(event: any) {
-    this.onSwipe(event.type);
+  @HostListener('swipedown', ['$event']) onSwipeDown(event: any) {
+    this.onSwipe(event);
   }
 
   onMouseWheel(event: any) {
@@ -149,11 +139,11 @@ export class TimeMachineComponent {
   onSwipe(event: any) {
     let delta = 0;
     
-    if (event === 'panup') {
+    if (event.type === 'swipeup') {
       delta = 1;
     }
 
-    if (event === 'pandown') {
+    if (event.type === 'swipedown') {
       delta = -1;
     }
 

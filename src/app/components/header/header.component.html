@@ -1,9 +1,13 @@
 <mat-toolbar class="flex-shrink-0" color="primary">
     <zodiac-sign [width]="'56px'" [height]="'56px'" *ngIf="preferencesService.preferences | async as preferences" [zodiacSign]="getZodiacSign(preferences?.birthday)"></zodiac-sign>
-    <span class="margin-left-8px">{{ title }}</span>
+    <span *ngIf="!(smallDeviceObs | async)?.matches as largeDevice">
+        <span class="margin-left-8px" *ngIf="largeDevice">{{ title }}</span>
+    </span>
     <span class="flex-grow-1"></span>
     <img *ngIf="afAuth.user | async as user" [src]="user.photoURL">
-    <span class="margin-left-8px" *ngIf="afAuth.user | async as user">{{user.displayName}}</span>
+    <span *ngIf="!(smallDeviceObs | async)?.matches as largeDevice">
+        <span class="margin-left-8px" *ngIf="largeDevice"><span *ngIf="afAuth.user | async as user">{{ user.displayName }}</span></span>
+    </span>
     <button *ngIf="afAuth.user | async as user"
         mat-icon-button
         [matMenuTriggerFor]="menu"

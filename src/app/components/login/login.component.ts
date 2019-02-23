@@ -4,13 +4,13 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
 import { auth } from 'firebase/app';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatSnackBar } from '@angular/material';
-import { Subscription } from 'rxjs';
-
 import { convertRange } from '../../helpers/convert-range';
 import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 import { pad2 } from '../../helpers/pad2';
 import { Preferences } from '../preferences/preferences.component';
+import { Subscription } from 'rxjs';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
 import { TimeMachineContentActiveEvent } from '../time-machine/time-machine-content-active-event';
 import { TimeMachineContentVisibleEvent } from '../time-machine/time-machine-content-visible-event';
@@ -62,6 +62,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     boundTrackByFn: Function;
 
+    queryParams$: Subscription;
+    
     returnUrl: string;
 
     user$: Subscription;
@@ -78,16 +80,25 @@ export class LoginComponent implements OnInit, OnDestroy {
         private afAuth: AngularFireAuth,
         private afs: AngularFirestore,
         private audioService: AudioService,
+        private breakpointObserver: BreakpointObserver,
         private preferencesService: PreferencesService,
         private route: ActivatedRoute,
         private router: Router,
         private snackBar: MatSnackBar) {
+            breakpointObserver.observe([
+                Breakpoints.HandsetLandscape,
+                Breakpoints.HandsetPortrait
+              ]).subscribe(result => {
+                if (result.matches) {
+                  this.activateHandsetLayout();
+                }
+              });
     }
 
     ngOnInit() {
         this.boundTrackByFn = this.trackByFn.bind(this);
 
-        this.route.queryParams
+        this.queryParams$ = this.route.queryParams
             .subscribe(params => this.returnUrl = params['returnUrl'] || '/search');
 
         this.user$ = this.afAuth.user.subscribe(user => {
@@ -125,6 +136,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        if (this.preferences$) {
+            this.preferences$.unsubscribe();
+        }
+        
         if (this.userDoc$) {
             this.userDoc$.unsubscribe();
         }
@@ -133,9 +148,14 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.user$.unsubscribe();
         }
 
-        if (this.preferences$) {
-            this.preferences$.unsubscribe();
+        if (this.queryParams$) {
+            this.queryParams$.unsubscribe();
         }
+
+    }
+
+    activateHandsetLayout() {
+        
     }
 
     // Track by the data id.

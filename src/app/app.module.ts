@@ -10,15 +10,15 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
-// import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
-// import * as Hammer from 'hammerjs';
-// export class MyHammerConfig extends HammerGestureConfig  {
-//   overrides = <any>{
-//       // override hammerjs default configuration
-//       'swipe': { direction: Hammer.DIRECTION_ALL  }
-//   }
-// }
+import * as Hammer from 'hammerjs';
+export class MyHammerConfig extends HammerGestureConfig  {
+  overrides = <any>{
+      // override hammerjs default configuration
+      'swipe': { direction: Hammer.DIRECTION_ALL  }
+  }
+}
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -143,10 +143,10 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     PreferencesComponent
   ],
   providers: [
-    // { 
-    //   provide: HAMMER_GESTURE_CONFIG, 
-    //   useClass: MyHammerConfig 
-    // },
+    { 
+      provide: HAMMER_GESTURE_CONFIG, 
+      useClass: MyHammerConfig 
+    },
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
       useValue: {
