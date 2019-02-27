@@ -1,6 +1,6 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-// import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
@@ -10,10 +10,11 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
-import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-
+import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import * as Hammer from 'hammerjs';
-export class MyHammerConfig extends HammerGestureConfig  {
+import { GestureConfig } from '@angular/material';
+
+export class MyHammerConfig extends GestureConfig  {
   overrides = <any>{
       // override hammerjs default configuration
       'swipe': { direction: Hammer.DIRECTION_ALL  }
@@ -51,6 +52,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { SearchComponent } from './components/search/search.component';
 import { LoginComponent } from './components/login/login.component';
 import { PreferencesComponent } from './components/preferences/preferences.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { StarFieldComponent } from './components/star-field/star-field.component';
 import { TimeMachineComponent } from './components/time-machine/time-machine.component';
 import { TimeMachineContentDirective } from './components/time-machine/time-machine-content.directive';
@@ -76,9 +78,9 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
 
 @NgModule({
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
-    // CommonModule,
+    BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -115,6 +117,7 @@ import { ScrollAudioDirective } from './directives/scroll-audio.directive';
     SearchComponent,
     LoginComponent,
     PreferencesComponent,
+    ProfileComponent,
     ClickLoginComponent,
     StarFieldComponent,
     TimeMachineComponent,

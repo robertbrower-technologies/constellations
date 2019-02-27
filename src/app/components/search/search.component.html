@@ -1,9 +1,7 @@
-
+<header class="flex-shrink-0" [title]="title" (logout)="onLogout()"></header>
 <time-machine
   #timeMachine
   class="flex-grow-1 z-index-1"
-  width="480px"
-  height="320px"
   contentClass=""
   [data]="data"
   [trackByFn]="boundTrackByFn"
@@ -18,90 +16,18 @@
   (transformContent)="transformContent($event)"
   (contentActive)="contentActive($event)"
   (contentVisible)="contentVisible($event)"
-  (delta)="delta($event)">
+  (delta)="delta($event)"
+  [width]="(smallDevice | async)?.matches ? '320px' : '480px'"
+  [height]="(smallDevice | async)?.matches ? '320px' : '320px'">
   <mat-card class="time-machine-content display-flex flex-direction-column"
     *timeMachineContent="let content"
     [ngClass]="{'active': content.active}"
     [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
-    (mouseover)="
-      content.data.compatibility = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].compatibility;
-      content.data.communication = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].communication;
-      content.data.sex = zodiacCompatibility[userZodiacSign][content.data.zodiacSign].sex;
-      content.data.mouseOverOpacity = 1;"
-    (mouseleave)="
-      content.data.compatibility = 0;
-      content.data.communication = 0;
-      content.data.sex = 0;
-      content.data.mouseOverOpacity = 0"
-    (click)="cardClicked(content)">
-    <div class="flex-shrink-0 display-flex">
-      <div class="display-flex flex-direction-column">
-        <div class="flex-grow-1"></div>
-          <div class="display-flex">
-            <h2 [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{content.data.screenName}}</h2>
-            <div class="margin-left-8px display-flex flex-direction-column">
-              <div class="flex-grow-1"></div>
-              <svg height="16" width="16"
-                [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}"
-                matTooltip="Last active {{content.data.lastActiveTime | date}}">
-                <circle cx="8" cy="8" r="8" stroke="green" stroke-width="0" fill="green" />
-              </svg>
-              <div class="flex-grow-1"></div>
-            </div>
-          </div>
-        <div class="flex-grow-1"></div>
-      </div>
-      <div class="flex-grow-1"></div>
-      <div class="display-flex flex-direction-column">
-        <div class="flex-grow-1"></div>
-        <mat-progress-spinner
-          class="communication margin-left-8px"
-          diameter="48"
-          strokeWidth="16"
-          mode="determinate"
-          [value]="content.data.communication"
-          [matTooltip]="'communication ' + content.data.communication + '%'">
-        </mat-progress-spinner>
-        <div class="flex-grow-1"></div>
-      </div>
-      <div class="display-flex flex-direction-column">
-        <div class="flex-grow-1"></div>
-        <mat-progress-spinner
-          class="compatibility margin-left-8px"
-          diameter="48"
-          strokeWidth="16"
-          mode="determinate"
-          [value]="content.data.compatibility"
-          [matTooltip]="'compatibility ' + content.data.compatibility + '%'">
-        </mat-progress-spinner>
-        <div class="flex-grow-1"></div>
-      </div>
-      <div class="display-flex flex-direction-column">
-        <div class="flex-grow-1"></div>
-        <mat-progress-spinner
-          class="sex margin-left-8px"
-          diameter="48"
-          strokeWidth="16"
-          mode="determinate"
-          [value]="content.data.sex"
-          [matTooltip]="'sex ' + content.data.sex + '%'">
-        </mat-progress-spinner>
-        <div class="flex-grow-1"></div>
-      </div>
-    </div>
-    <div class="display-flex">
-      <div class="flex-grow-1"></div>
-      <zodiac-sign
-        [ngStyle]="{'opacity': content.data.opacity}"
-        [width]="'128px'"
-        [height]="'128px'"
-        [zodiacSign]="content.data.zodiacSign"></zodiac-sign>
-      <img *ngIf="content.data.showPhotoInSearchResults"
-        class="position-absolute"
-        [src]="content.data.photoURL"
-        [ngStyle]="{'left': '', 'top': '', 'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">
-      <div class="flex-grow-1"></div>
-    </div>
-    <p [ngStyle]="{'opacity': content.data.mouseOverOpacity ? content.data.mouseOverOpacity : 0}">{{zodiacCompatibility[userZodiacSign][content.data.zodiacSign].description}}</p>
+    (click)="cardClicked(content)"
+    [ngStyle]="{ 
+      'width': (smallDevice | async)?.matches ? '320px' : '480px',
+      'height': (smallDevice | async)?.matches ? '320px' : '320px'
+    }">
+    <profile class="flex-grow-1" [data]="content.data" [userZodiacSign]="userZodiacSign"></profile>
   </mat-card>
 </time-machine>

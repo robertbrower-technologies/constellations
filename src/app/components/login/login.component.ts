@@ -4,13 +4,13 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
 import { auth } from 'firebase/app';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { MatSnackBar } from '@angular/material';
 import { convertRange } from '../../helpers/convert-range';
 import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
+import { Observable, Subscription } from 'rxjs';
 import { pad2 } from '../../helpers/pad2';
 import { Preferences } from '../preferences/preferences.component';
-import { Subscription } from 'rxjs';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
 import { TimeMachineContentActiveEvent } from '../time-machine/time-machine-content-active-event';
 import { TimeMachineContentVisibleEvent } from '../time-machine/time-machine-content-visible-event';
@@ -41,6 +41,8 @@ export interface Login {
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
+    title = 'Constellations';
+
     data: Array<Login> = [
         { id: 1, name: 'Google', imgSrc: 'assets/images/logos/google.svg', login: this.signInWithGoogle.bind(this) },
         { id: 2, name: 'Facebook', imgSrc: 'assets/images/logos/facebook.svg', login: this.signInWithFacebook.bind(this) },
@@ -50,7 +52,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     activeIndex: number;
 
-    translateX = 1000;
+    translateX = 250;
 
     translateY = 500;
 
@@ -75,6 +77,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     preferences: Preferences;
 
     userDoc$: Subscription;
+
+    smallDevice: Observable<BreakpointState>;
   
     constructor(
         private afAuth: AngularFireAuth,
@@ -85,14 +89,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private snackBar: MatSnackBar) {
-            breakpointObserver.observe([
+            this.smallDevice = breakpointObserver.observe([
                 Breakpoints.HandsetLandscape,
                 Breakpoints.HandsetPortrait
-              ]).subscribe(result => {
-                if (result.matches) {
-                  this.activateHandsetLayout();
-                }
-              });
+            ]);
     }
 
     ngOnInit() {
@@ -133,6 +133,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.preferences$ = this.preferencesService.preferences.subscribe((preferences: Preferences) => {
             this.preferences = preferences;
         });
+
+        // this.audioService.playAudio('onInitAudio');
     }
 
     ngOnDestroy() {

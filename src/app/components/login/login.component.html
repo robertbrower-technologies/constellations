@@ -1,8 +1,7 @@
+<header class="flex-shrink-0" [title]="title"></header>
 <time-machine
   #timeMachine
   class="flex-grow-1 z-index-1"
-  width="480px"
-  height="320px"
   contentClass=""
   [data]="data"
   [trackByFn]="boundTrackByFn"
@@ -17,14 +16,21 @@
   (transformContent)="transformContent($event)"
   (contentActive)="contentActive($event)"
   (contentVisible)="contentVisible($event)"
-  (delta)="delta($event)">
+  (delta)="delta($event)"
+  [width]="(smallDevice | async)?.matches ? '320px' : '480px'"
+  [height]="(smallDevice | async)?.matches ? '320px' : '320px'">
   <mat-card class="time-machine-content display-flex flex-direction-column justify-content-center"
     *timeMachineContent="let content"
     [ngClass]="{'active': content.active}"
     [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
-    [ngSwitch]="content.data.name">
-    <email-login *ngSwitchCase="'Email'" [data]="content.data"></email-login>
-    <click-login *ngSwitchDefault [data]="content.data"></click-login>
+    [ngSwitch]="content.data.name"
+    [ngStyle]="{ 
+      'width': (smallDevice | async)?.matches ? '320px' : '480px',
+      'height': (smallDevice | async)?.matches ? '320px' : '320px'
+    }">
+    <email-login *ngSwitchCase="'Email'" [data]="content.data"
+      class="flex-grow-1"></email-login>
+    <click-login *ngSwitchDefault [data]="content.data"
+      class="flex-grow-1"></click-login>
   </mat-card>
 </time-machine>
-

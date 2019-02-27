@@ -11,7 +11,8 @@ star-field {
 
 :host ::ng-deep login,
 :host ::ng-deep search,
-:host ::ng-deep chat {
+:host ::ng-deep chat,
+:host ::ng-deep preferences {
     flex-grow: 1;
 
     -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */

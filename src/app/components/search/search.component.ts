@@ -4,11 +4,12 @@ import { MatSnackBar } from '@angular/material';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection, DocumentSnapshot } from '@angular/fire/firestore';
 import { AudioService } from '../../services/audio.service';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { convertRange } from '../../helpers/convert-range';
 import { ChatInvitation } from '../../models/chat-invitation';
 import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 import { getZodiacSign } from '../../helpers/get-zodiac-sign';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { pad2 } from '../../helpers/pad2';
 import { Preferences } from '../preferences/preferences.component';
 import { TimeMachineContent } from '../time-machine/time-machine-content';
@@ -21,6 +22,7 @@ import { User } from '../../models/user';
 import { ZodiacCompatibility } from '../../constants/zodiac-compatibility';
 import { ZodiacDates } from '../../constants/zodiac-dates';
 import { PreferencesService } from 'src/app/services/preferences.service';
+import { CLEANUP } from '@angular/core/src/render3/interfaces/view';
 
 @Component({
   selector: 'search',
@@ -29,11 +31,13 @@ import { PreferencesService } from 'src/app/services/preferences.service';
 })
 export class SearchComponent implements  OnInit, OnDestroy {
 
+    title = 'Constellations';
+
     data: Array<Partial<User>>;
 
     activeIndex: number;
 
-    translateX = 1000;
+    translateX = 250;
 
     translateY = 500;
 
@@ -63,16 +67,25 @@ export class SearchComponent implements  OnInit, OnDestroy {
 
     users$: Subscription;
 
-    chatInvitationDoc$: Subscription;
+    // chatInvitationDoc$: Subscription;
+
+    chatInvitations$: Subscription;
+
+    smallDevice: Observable<BreakpointState>;
 
     constructor(
         public afAuth: AngularFireAuth,
         private afs: AngularFirestore,
         private audioService: AudioService,
+        private breakpointObserver: BreakpointObserver,
         private preferencesService: PreferencesService,
         private router: Router,
         private snackBar: MatSnackBar
         ) {
+            this.smallDevice = breakpointObserver.observe([
+                Breakpoints.HandsetLandscape,
+                Breakpoints.HandsetPortrait
+            ]);
     }
 
     ngOnInit() {
@@ -106,14 +119,24 @@ export class SearchComponent implements  OnInit, OnDestroy {
                 
         //     });
 
-        this.afs.collection('users').doc(this.afAuth.auth.currentUser.uid).collection('chatInvitations').valueChanges()
+        this.chatInvitations$ = this.afs.collection('users').doc(this.afAuth.auth.currentUser.uid).collection('chatInvitations').valueChanges()
             .subscribe(chatInvitations => {
             })
 
-        this.audioService.playAudio('onInitAudio');
+        // this.audioService.playAudio('onInitAudio');
     }
 
     ngOnDestroy() {
+        this.cleanUp();
+    }
+
+    onLogout() {
+        this.cleanUp();
+        this.afAuth.auth.signOut();
+        this.router.navigate(['/login']);
+    }
+
+    cleanUp() {
         if (this.users$) {
             this.users$.unsubscribe();
         }
@@ -122,8 +145,12 @@ export class SearchComponent implements  OnInit, OnDestroy {
             this.preferences$.unsubscribe();
         }
 
-        if (this.chatInvitationDoc$) {
-            this.chatInvitationDoc$.unsubscribe();
+        // if (this.chatInvitationDoc$) {
+        //     this.chatInvitationDoc$.unsubscribe();
+        // }
+
+        if (this.chatInvitations$) {
+            this.chatInvitations$.unsubscribe();
         }
     }
 
@@ -138,7 +165,7 @@ export class SearchComponent implements  OnInit, OnDestroy {
         event.content.translateX = Math.sin(event.content.translateZ) * this.translateX;
         event.content.translateY = Math.sin(event.content.translateZ) * this.translateY;
         event.content.rotateX = 0;
-        event.content.opacity = convertRange(event.content.translateZ, [this.maxTranslateZ, 0], [0, 1]);
+        event.content.opacity = event.content.translateZ > 0 ? 1 : convertRange(event.content.translateZ, [this.maxTranslateZ, 0], [0, 1]);
     }
 
     // Transform the content with a custom sinusoidal behavior.
@@ -147,7 +174,7 @@ export class SearchComponent implements  OnInit, OnDestroy {
         event.content.translateX = Math.sin(event.content.translateZ) * this.translateX;
         event.content.translateY = Math.sin(event.content.translateZ) * this.translateY;
         event.content.rotateX = event.content.translateZ > 0 ? this.rotateX : 0;
-        event.content.opacity = convertRange(event.content.translateZ, [this.maxTranslateZ, 0], [0, 1]);
+        event.content.opacity = event.content.translateZ > 0 ? 1 : convertRange(event.content.translateZ, [this.maxTranslateZ, 0], [0, 1]);
     }
     
     // Capture the active index for the slider.

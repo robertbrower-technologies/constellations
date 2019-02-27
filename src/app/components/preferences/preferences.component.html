@@ -36,6 +36,12 @@
 <!-- <pre><pre>{{formGroup.value | json}}</pre></pre> -->
 <div mat-dialog-actions class="display-flex">
     <div class="flex-grow-1"></div>
-    <button mat-button color="primary" (click)="onCancelBtnClick()">Cancel</button>
-    <button mat-button color="primary" (click)="onSaveBtnClick()" cdkFocusInitial [disabled]="formGroup.invalid">Save</button>
+    <button
+        mat-button color="primary"
+        [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
+        (click)="onCancelBtnClick()">Cancel</button>
+    <button
+        mat-button color="primary"
+        [mouseOverAudio]="'mouseOverAudio'" [clickAudio]="'clickAudio'"
+        (click)="onSaveBtnClick()" cdkFocusInitial [disabled]="formGroup.invalid">Save</button>
 </div>

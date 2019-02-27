@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Login } from '../login/login.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'email-login',
@@ -12,6 +14,16 @@ export class EmailLoginComponent implements OnInit {
     @Input() data: Login;
 
     formGroup: FormGroup;
+
+    smallDevice: Observable<BreakpointState>;
+
+    constructor(
+      private breakpointObserver: BreakpointObserver) {
+          this.smallDevice = breakpointObserver.observe([
+              Breakpoints.HandsetLandscape,
+              Breakpoints.HandsetPortrait
+          ]);
+    }
 
     loginBtnClicked() {
 

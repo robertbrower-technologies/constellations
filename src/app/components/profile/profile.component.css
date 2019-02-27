@@ -1,0 +1,48 @@
+:host {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+:host:hover {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #673ab7;
+    background-color: rgb(103, 58, 183, 0.4);
+}
+
+zodiac-sign {
+    fill: white;
+    stroke: white;
+}
+
+::ng-deep mat-progress-spinner.compatibility svg circle {
+    stroke: blue;
+}
+
+::ng-deep mat-progress-spinner.communication svg circle {
+    stroke: green;
+}
+
+::ng-deep mat-progress-spinner.sex svg circle {
+    stroke: red;
+}
+
+img {
+    border-radius: 50%;
+}
+
+h2, svg, img, :host ::ng-deep zodiac-sign svg, p {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -o-transition: all .5s;
+    -ms-transition: all .5s;
+    transition: all .5s;
+}

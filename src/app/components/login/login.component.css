@@ -6,34 +6,15 @@
 }
 
 mat-card {
-    background-color: transparent;
-    border-style: solid;
-    border-width: 2px;
     border-color: transparent;
-    color: white;
-    cursor: pointer;
-
-    padding: 20px; /* ***Important... padding & border!!! */
-    width: 436px; /* + border + padding = 480 px*/
-    height: 276px; /* + border + padding = 320 px*/
-
+    background-color: transparent;
+    
+    padding: 0;
     display: flex;
     flex-direction: column;
-
     -webkit-transition: all .5s;
     -moz-transition: all .5s;
     -o-transition: all .5s;
     -ms-transition: all .5s;
     transition: all .5s;
-}
-
-mat-card.active {
-    
-}
-
-mat-card:hover {
-    border-style: solid;
-    border-width: 2px;
-    border-color: #673ab7;
-    background-color: rgb(103, 58, 183, 0.4);
 }

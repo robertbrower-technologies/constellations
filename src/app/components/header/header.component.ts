@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,7 +19,9 @@ export class HeaderComponent {
 
   getZodiacSign = getZodiacSign
 
-  smallDeviceObs: Observable<BreakpointState>;
+  smallDevice: Observable<BreakpointState>;
+
+  @Output() logout = new EventEmitter();
 
   constructor(
     public afAuth: AngularFireAuth,
@@ -27,7 +29,7 @@ export class HeaderComponent {
     private dialog: MatDialog,
     private router: Router,
     public preferencesService: PreferencesService) {
-      this.smallDeviceObs = breakpointObserver.observe([
+      this.smallDevice = breakpointObserver.observe([
         Breakpoints.HandsetLandscape,
         Breakpoints.HandsetPortrait
       ]);
@@ -42,8 +44,7 @@ export class HeaderComponent {
   }
 
   logoutBtnClicked() {
-    this.afAuth.auth.signOut();
-    this.router.navigate(['/login']);
+    this.logout.emit();
   }
 
   preferencesBtnClicked(): void {

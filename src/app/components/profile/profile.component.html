@@ -1,0 +1,81 @@
+<div class="flex-shrink-0 display-flex">
+    <div class="display-flex flex-direction-column">
+        <div class="flex-grow-1"></div>
+        <div class="display-flex">
+            <div class="display-flex flex-direction-column">
+                <div class="flex-grow-1"></div>
+                <svg height="16" width="16"
+                    [ngStyle]="{'opacity': mouseOverOpacity ? mouseOverOpacity : 0}"
+                    matTooltip="Last active {{data.lastActiveTime | date}}">
+                    <circle cx="8" cy="8" r="8" stroke="green" stroke-width="0" fill="green" />
+                </svg>
+                <div class="flex-grow-1"></div>
+            </div>
+            <span class="margin-left-8px" [ngStyle]="{'opacity': mouseOverOpacity ? mouseOverOpacity : 0}">{{data.screenName}}</span>
+            
+        </div>
+        <div class="flex-grow-1"></div>
+    </div>
+    <div class="flex-grow-1"></div>
+    <div class="display-flex flex-direction-column">
+        <div class="flex-grow-1"></div>
+        <mat-progress-spinner
+            class="communication margin-left-8px"
+            [diameter]="(smallDevice | async)?.matches ? 24 : 48"
+            [strokeWidth]="(smallDevice | async)?.matches ? 8 : 16"
+            mode="determinate"
+            [value]="communication"
+            [matTooltip]="'communication ' + communication + '%'">
+        </mat-progress-spinner>
+        <div class="flex-grow-1"></div>
+    </div>
+    <div class="display-flex flex-direction-column">
+        <div class="flex-grow-1"></div>
+        <mat-progress-spinner
+            class="compatibility margin-left-8px"
+            [diameter]="(smallDevice | async)?.matches ? 24 : 48"
+            [strokeWidth]="(smallDevice | async)?.matches ? 8 : 16"
+            mode="determinate"
+            [value]="compatibility"
+            [matTooltip]="'compatibility ' + compatibility + '%'">
+        </mat-progress-spinner>
+        <div class="flex-grow-1"></div>
+    </div>
+    <div class="display-flex flex-direction-column">
+        <div class="flex-grow-1"></div>
+        <mat-progress-spinner
+            class="sex margin-left-8px"
+            [diameter]="(smallDevice | async)?.matches ? 24 : 48"
+            [strokeWidth]="(smallDevice | async)?.matches ? 8 : 16"
+            mode="determinate"
+            [value]="sex"
+            [matTooltip]="'sex ' + sex + '%'">
+        </mat-progress-spinner>
+        <div class="flex-grow-1"></div>
+    </div>
+</div>
+<div class="display-flex">
+    <div class="flex-grow-1"></div>
+    <div class="margin-top-8px"
+        [ngStyle]="{
+            'width': (smallDevice | async)?.matches ? '128px' : '128px',
+            'height': (smallDevice | async)?.matches ? '128px' : '128px'}">
+        <zodiac-sign
+            class="position-absolute"
+            [ngStyle]="{'opacity': inverseMouseOverOpacity}"
+            [width]="(smallDevice | async)?.matches ? '128px' : '128px'"
+            [height]="(smallDevice | async)?.matches ? '128px' : '128px'"
+            [zodiacSign]="data.zodiacSign"></zodiac-sign>
+        <img *ngIf="data.showPhotoInSearchResults"
+            class="position-absolute"
+            [src]="data.photoURL"
+            [ngStyle]="{
+                'width': (smallDevice | async)?.matches ? '128px' : '128px',
+                'height': (smallDevice | async)?.matches ? '128px' : '128px',
+                'opacity': mouseOverOpacity ? mouseOverOpacity : 0}">
+    </div>
+    <div class="flex-grow-1"></div>
+</div>
+<div>
+    <p class="margin-top-8px margin-bottom-0 text-align-justify" [ngStyle]="{'opacity': mouseOverOpacity ? mouseOverOpacity : 0}">{{zodiacCompatibility[userZodiacSign][data.zodiacSign].description}}</p>
+</div>
